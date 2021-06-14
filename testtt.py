@@ -1,15 +1,31 @@
 import json
 import filter_json
 import numpy as np
-# s = "{'notch':{'filter_frequency':2}}"
-# text = []
-# text.append(s)
-ss = "[{\"bandpass\":{\"filter_min_frequency\":11,\"filter_max_frequency\":30}},{\"notch\":{\"filter_frequency\":2}}]"
-#text.append(ss)
-qq = [0]*1250
-filter = filter_json.FilterJson(qq,ss,250)
-filter.run()
-aa = np.zeros(1250*1250)
-aa = aa.reshape(1250,1250)
-print(aa.value())
+import pywt
+import numpy as np
+import matplotlib.pyplot as plt
+
+from scipy.signal import chirp
+
+# Define signal
+fs = 128
+sampling_period = 1 / fs
+t = np.linspace(0, 2, 2 * fs)
+x = chirp(t, 10, 2, 40, 'quadratic')
+
+# Calculate continuous wavelet transform
+coef, freqs = pywt.cwt(x, np.arange(1, 50), 'morl',
+                       sampling_period=sampling_period)
+
+# Show w.r.t. time and frequency
+plt.figure(figsize=(5, 2))
+plt.pcolor(t, freqs, coef)
+
+# Set yscale, ylim and labels
+plt.yscale('log')
+plt.ylim([1, 100])
+plt.ylabel('Frequency (Hz)')
+plt.xlabel('Time (sec)')
+
+plt.savefig('egg.png', dpi=150)
 

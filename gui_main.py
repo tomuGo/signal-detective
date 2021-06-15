@@ -62,12 +62,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.figure.origin.cla()
         self.figure.origin.plot(temp_data)
         self.figure.origin.plot(filter_data)
-        f, t, Zxx = signal.stft(filter_data, self.frequency.value(), nperseg=50)
-        temperature = [[9, 2, 3, 9], [2, 3, 4, 5], [3, 4, 5, 6], [9, 7, 8, 9]]
-        aa = np.random.randint(0, 10, size=(60, 1250))
-
-        self.figure.timeFrequency.imshow(aa, cmap=cm.hot, norm=LogNorm())
-        #self.figure.timeFrequency.plot(t, f, np.abs(Zxx))
+        widths = np.arange(0.1, 50, 0.2)
+        swt_data = signal.cwt(temp_data, signal.ricker, widths)
+        #cwtmatr = signal.cwt(sig, signal.ricker, widths)
+        #f, t, Zxx = signal.stft(filter_data, self.frequency.value(), nperseg=100)
+        #Pxx, freqs, bins, im = self.figure.timeFrequency.specgram(self._ecg_data, NFFT=500, Fs=250, noverlap=60,cmap='hot')
+        self.figure.timeFrequency.imshow(swt_data, cmap='hot', norm=LogNorm())
         self.figure.draw()
         self.figure.flush_events()
 
